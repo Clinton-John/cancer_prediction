@@ -1,0 +1,2 @@
+After adding the chart from plotly, scale the values to get them to a given range \
+in the fig.layout, the range is set but when changed, it tends to favor a specific section but ignores the other sections. for example when set from 0 to 2000 then the area line is clearly shown but the other features dissapear due to the huge range yet the numbers are really small
