@@ -2,6 +2,7 @@
 import joblib
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 
 def get_clean_data():
@@ -65,9 +66,10 @@ def add_sidebar():
 
     return input_dict
 
-#using the plotly library to come up with the interactive charts. from the plotly documentation
+#using the plotly library to come up with a chart that displays our data from the plotly documentation
 def get_radar_chart(input_data):
     import plotly.graph_objects as go
+    input_data = get_scaled_values(input_data)
 
     # these are the categories from which we want to add the values from the graph
     categories = ['Radius','Texture','Perimeter','Area','Smoothness','Compactness', 'Concavity', 
@@ -106,14 +108,46 @@ def get_radar_chart(input_data):
     polar=dict(
         radialaxis=dict(
         visible=True,
-        range=[0, 5]
+        range=[0, 1]
         )),
     showlegend=True
     )
     #streamlit uses its own function to add the plotly elements to the chart hence no need to use fig.show() instead return the fig
     return fig
 
+#function incharge of scaling the values
+def get_scaled_values(input_dict):
+    data = get_clean_data()
+    X = data.drop(['diagnosis'], axis=1)
 
+    scaled_dict = {}
+
+    for key, value in input_dict.items():
+        max_value = X[key].max()
+        min_value = X[key].min()
+        scaled_value = (value - min_value) / (max_value-min_value) #using the min max scaling
+        scaled_dict[key] = scaled_value
+
+    return scaled_dict
+
+#the function will be used to add predictions to the screen
+# the predictions is added on to column two hence the function will be called on model two
+def add_predictions(input_data):
+    model = joblib.load('model/regressor.pkl')
+    scaler = joblib.load('model/scaler.pkl')
+
+    #input data is a dictionary, get the keys and convert them into an array
+    input_array = np.array(list(input_data.values())).reshape(1,-1)
+    input_array_scaled = scaler.transform(input_array)
+    prediction = model.predict(input_array_scaled)
+
+    if prediction[0] == 0:
+        st.write("Benign")
+    else:
+        st.write("Malignant")
+
+    # st.write("Probability of cell being Benign is", model.predict_proba(input_array_scaled)[0][0])
+    # st.write("Probability of cell being Malignan is", model.predict_proba(input_array_scaled)[0][1])
 
 def main():
     #initial page configurations that apply to the whole project 
@@ -141,7 +175,7 @@ def main():
         radar_chart = get_radar_chart(input_data)
         st.plotly_chart(radar_chart)
     with col2:
-        st.write("Column2 of Our Prediction Model")
+        add_predictions(input_data)
 
 
 

@@ -1,2 +1,28 @@
 After adding the chart from plotly, scale the values to get them to a given range \
 in the fig.layout, the range is set but when changed, it tends to favor a specific section but ignores the other sections. for example when set from 0 to 2000 then the area line is clearly shown but the other features dissapear due to the huge range yet the numbers are really small
+
+after the function scales the data that is passed into it from the sidebar function, the get scaled function passes it into the get_radar_chart which is then used in the plotting 
+
+
+--- PREDICTION SECTION OF THE APPLICATION
+
+
+--- OPTIONALLY STYLING USING CSS
+1. craete an assests folder.
+2. in the web browser, check on the class and change it inside the styles.css which is set in the assets folder
+3. add the css as if it is a markdown file
+with open('assets/styles.css') as f:
+    st.markdown("<stlye>{}</style>".format(f.read()), unsafe_allow_html=True)
+
+the above is added in the main function.
+
+4. to make changes to some of the files that we have created on our own, we can use the following
+st.write("<span class="diagnosed_benign">Benign</span>", unsafe_allow_html=True)
+
+
+---DEPLOYMENT OPTIONS USING THE STREAMLIT COMMUNITY CLOUD
+1. streamlit community cloud >> signup, signin, dashbord
+2. connect the stremlit cloud community to github
+3. tell the streamlit about the packages to be used
+4. pip install pipreqs
+pipreqs to generate the requirements.txt --> alternatively you can use the pip freeze requirements.txt
